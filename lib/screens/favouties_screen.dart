@@ -17,6 +17,7 @@ class FavouritesScreen extends StatelessWidget {
                 title: catData.title,
                 color: catData.color,
                 id: catData.id,
+                categoryImageLocation: catData.categoryImageLocation,
               ))
           .toList(),
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

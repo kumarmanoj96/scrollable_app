@@ -10,43 +10,8 @@ class CategoryItem extends StatelessWidget {
   final String title;
   final Color color;
   final bool isFavourite;
-  const CategoryItem({this.id, this.title, this.color, this.isFavourite});
-
-  String get imageAsset {
-    switch (id) {
-      case 'c1':
-        {
-          return 'assets/images/business_news.png';
-        }
-        break;
-      case 'c2':
-        {
-          return 'assets/images/entertainment_news.png';
-        }
-        break;
-      case 'c3':
-        {
-          return 'assets/images/health_news.png';
-        }
-        break;
-      case 'c4':
-        {
-          return 'assets/images/science_news.png';
-        }
-        break;
-      case 'c5':
-        {
-          return 'assets/images/sports_news.png';
-        }
-        break;
-      case 'c6':
-        {
-          return 'assets/images/technology_news.png';
-        }
-        break;
-    }
-  }
-
+  final String categoryImageLocation;
+  const CategoryItem({this.id, this.title, this.color, this.isFavourite,this.categoryImageLocation});
   void selectCategory(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(CategoryContentsScreen.routeName,
         arguments: {'id': id, 'title': title});
@@ -73,7 +38,7 @@ class CategoryItem extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.asset(
-                imageAsset,
+                categoryImageLocation,
                 fit: BoxFit.cover,
               ),
             ),

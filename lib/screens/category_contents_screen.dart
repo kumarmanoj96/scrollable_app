@@ -16,16 +16,35 @@ class CategoryContentsScreen extends StatefulWidget {
 class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
   String categoryTitle;
   String categoryId;
-  var _loadedData = false;
+  bool _isInit = true;
+  bool _isLoading = false;
+
   @override
   void didChangeDependencies() {
-    if (!_loadedData) {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
       final routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, String>;
       categoryTitle = routeArgs['title'];
       categoryId = routeArgs['id'];
-      _loadedData = true;
+
+      Provider.of<ContentProviders>(context)
+          .fetchAndSetContentsByCategoryId(categoryId)
+          .then((_) {
+        print('fetching done');
+        setState(() {
+          _isLoading = false;
+        });
+      }).catchError((error) {
+        print('error==:$error');
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
+    _isInit = false;
     super.didChangeDependencies();
   }
 
@@ -46,20 +65,28 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
               }),
         ],
       ),
-      body: contents.length == 0
+      body: _isLoading == true
           ? Center(
-              child: Text('oops no content is availabe'),
+              child: CircularProgressIndicator(),
             )
-          : ListView.builder(
-              itemBuilder: (ctx, index) {
-                print(contents[index].contentId);
-                return ContentScreen(
-                  categoryId: categoryId,
-                  contentId: contents[index].contentId,
-                );
-              },
-              itemCount: contents.length,
-            ),
+          : _isLoading == true
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : contents.length == 0
+                  ? Center(
+                      child: Text('oops no content is availabe'),
+                    )
+                  : ListView.builder(
+                      itemBuilder: (ctx, index) {
+                        print(contents[index].contentId);
+                        return ContentScreen(
+                          categoryId: categoryId,
+                          contentId: contents[index].contentId,
+                        );
+                      },
+                      itemCount: contents.length,
+                    ),
     );
   }
 }

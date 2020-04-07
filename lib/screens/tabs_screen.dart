@@ -13,9 +13,6 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   List<Map<String, Object>> _pages;
-  bool isContentRecieved = false;
-   var _isInit = true;
-  var _isLoading = false;
   int _selectedPage = 0;
   void _selectPage(int index) {
     setState(() {
@@ -35,31 +32,7 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'Your favourites',
       }
     ];
-  }
-
-   @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      Provider.of<ContentProviders>(context).fetchAndSetContents().then((_) {
-        print('fetching done');
-        setState(() {
-          _isLoading = false;
-        });
-      }).catchError((error){
-        print('error==:$error');
-         setState(() {
-          _isLoading = false;
-        });
-      });
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
-
+  } 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,11 +40,7 @@ class _TabsScreenState extends State<TabsScreen> {
         title: Text(_pages[_selectedPage]['title']),
       ),
       // drawer: MainDrawer(),
-      body: _isLoading == true
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : _pages[_selectedPage]['page'],
+      body: _pages[_selectedPage]['page'],
       bottomNavigationBar: BottomNavigationBar(
           onTap: _selectPage,
           backgroundColor: Colors.blue,

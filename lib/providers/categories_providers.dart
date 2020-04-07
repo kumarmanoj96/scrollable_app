@@ -7,31 +7,37 @@ class CategoriesProviders with ChangeNotifier{
       id: 'c1',
       title: 'business',
       color: Colors.purple,
+    categoryImageLocation: 'assets/images/business_news.png',
     ),
     Category(
       id: 'c2',
       title: 'entertainment',
       color: Colors.red,
+      categoryImageLocation: 'assets/images/entertainment_news.png',
     ),
     Category(
       id: 'c3',
       title: 'health',
       color: Colors.orange,
+      categoryImageLocation: 'assets/images/health_news.png',
     ),
     Category(
       id: 'c4',
       title: 'science',
       color: Colors.amber,
+      categoryImageLocation: 'assets/images/science_news.png',
     ),
     Category(
       id: 'c5',
       title: 'sports',
       color: Colors.blue,
+      categoryImageLocation: 'assets/images/sports_news.png',
     ),
     Category(
       id: 'c6',
       title: 'technology',
       color: Colors.green,
+      categoryImageLocation: 'assets/images/technology_news.png',
     ),
   ];
 
