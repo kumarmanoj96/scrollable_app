@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/content_providers.dart';
-import '../models/meal.dart';
 
 import '../screens/content_screen.dart';
+import '../screens/edit_content_screen.dart';
 
 class CategoryContentsScreen extends StatefulWidget {
-  static const routeName = '/category-meals';
+  static const routeName = '/category-contents';
 
   @override
   _CategoryContentsScreenState createState() => _CategoryContentsScreenState();
@@ -37,6 +37,14 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).pushNamed(EditContentScreen.routeName,
+                    arguments: {'contentId': '', 'categoryId': categoryId});
+              }),
+        ],
       ),
       body: contents.length == 0
           ? Center(
@@ -45,7 +53,10 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
           : ListView.builder(
               itemBuilder: (ctx, index) {
                 print(contents[index].contentId);
-                return ContentScreen(categoryId: categoryId,contentId: contents[index].contentId,);
+                return ContentScreen(
+                  categoryId: categoryId,
+                  contentId: contents[index].contentId,
+                );
               },
               itemCount: contents.length,
             ),

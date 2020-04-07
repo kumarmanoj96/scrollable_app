@@ -6,6 +6,7 @@ import './screens/levels_screen.dart';
 import './screens/scroller_screen.dart';
 import './screens/tabs_screen.dart';
 import './screens/category_contents_screen.dart';
+import './screens/edit_content_screen.dart';
 
 import './providers/level_providers.dart';
 import './providers/content_providers.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           LevelsScreen.routeName: (ctx) => LevelsScreen(),
           ScrollerScreen.routeName: (ctx) => ScrollerScreen(),
           CategoryContentsScreen.routeName: (ctx) => CategoryContentsScreen(),
+          EditContentScreen.routeName:(ctx)=>EditContentScreen(),
         },
       ),
     );

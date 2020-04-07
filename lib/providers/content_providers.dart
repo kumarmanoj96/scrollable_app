@@ -33,33 +33,32 @@ class ContentProviders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetContents() async {
+    print("inside fetchAndSetContents\n\n");
     CategoriesProviders c = new CategoriesProviders();
     for (Category category in c.categories) {
-      print(category.id);
-      if (category.id == 'c2') break;
+     
       var url =
-          'https://newsapi.org/v2/top-headlines?apiKey=840dcd7c3b1c4af3a5805287b90c264c&category=${category.title}&country=in';
-      try {
+          'https://scrollable-app.firebaseio.com/${category.id}/contents.json';  try {
         final response = await http.get(url);
+        print("response:");
+        print(response);
         final extractedData =
             json.decode(response.body) as Map<String, dynamic>;
-        if (extractedData == null || extractedData['status'] != 'ok') {
+             print(extractedData);
+        if (extractedData == null) {
           return;
         }
         final List<Content> loadedContents = [];
 
-        extractedData['articles'].forEach((article) {
-          if (article['title'] != null && article['url'] != null) {
+
+        extractedData.forEach((key,value) {
             loadedContents.add(Content(
-              contentId: DateTime.now().toString(),
-              categoryId: category.id,
-              contentData: "",
-              contentTitle: article['title'],
-              fullContentURL: article['url'],
-              imageURL: article['urlToImage'],
-              description: article['description'],
+              contentId:key,
+              categoryId: value["categoryId"],
+              contentData: value["contentData"],
+              contentTitle: value["contentTitle"],
+              imageURL: value['imageURL'],
             ));
-          }
           _contents[category.id] = loadedContents;
         });
         notifyListeners();
@@ -109,5 +108,79 @@ class ContentProviders with ChangeNotifier {
       );
     }
     return null;
+  }
+
+  Future<void> addContent(Content content,String categoryId) async {
+    // CategoriesProviders c = new CategoriesProviders();
+    print("addContent called:$content");
+    print("title:$content.contentTitle");
+     print("contentData:$content.contentData");
+     print("categoryId:$content.categoryId");
+     print("categoryId:$categoryId*****");
+
+    final url =
+        'https://scrollable-app.firebaseio.com/${categoryId}/contents.json';
+    try {
+
+      final response = await http.post(url,
+          body: json.encode({
+            'contentTitle': content.contentTitle,
+            'categoryId': categoryId,
+            'imageURL': content.imageURL,
+            'contentData': content.contentData,
+            'description': content.description,
+          }));
+      final newContent = Content(
+        contentTitle: content.contentTitle,
+        categoryId: categoryId,
+        imageURL: content.imageURL,
+        contentData: content.contentData,
+        description:content.description,
+        contentId: json.decode(response.body)['name'],
+      );
+      _contents[content.categoryId].add(newContent);
+      notifyListeners();
+    } catch (error) {
+      // print(error);
+      throw (error);
+    }
+  }
+
+  Future<void> fetchAndSetContentsByCategoryId(String categoryId) async {
+    print('inside fetchAndSetContentsByCategoryId:\n');
+      var url =
+          'https://scrollable-app.firebaseio.com/${categoryId}/contents.json';
+      try {
+        final response = await http.get(url);
+        final extractedData =
+            json.decode(response.body) as Map<String, dynamic>;
+        // if (extractedData == null || extractedData['status'] != 'ok') {
+        //   return;
+        // }
+        print(extractedData);
+        final List<Content> loadedContents = [];
+
+        // extractedData['articles'].forEach((article) {
+        //   if (article['title'] != null && article['url'] != null) {
+        //     loadedContents.add(Content(
+        //       contentId: DateTime.now().toString(),
+        //       categoryId: category.id,
+        //       contentData: "",
+        //       contentTitle: article['title'],
+        //       fullContentURL: article['url'],
+        //       imageURL: article['urlToImage'],
+        //       description: article['description'],
+        //     ));
+        //   }
+        //   _contents[category.id] = loadedContents;
+        // });
+        notifyListeners();
+      } catch (error) {
+        print('error occured\n');
+        print(error);
+        throw (error);
+      }
+    
+    print('Done');
   }
 }

@@ -10,12 +10,12 @@ class Content {
   final String description;
 
   const Content({
-    @required this.contentId,
-    @required this.categoryId,
-    @required this.contentData,
-    @required this.contentTitle,
-    @required this.fullContentURL,
-    @required this.imageURL,
-    @required this.description,
+    this.contentId,
+    this.categoryId,
+    this.contentData,
+    this.contentTitle,
+    this.fullContentURL,
+    this.imageURL,
+    this.description,
   });
 }
