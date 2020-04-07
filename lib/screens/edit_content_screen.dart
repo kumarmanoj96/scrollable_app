@@ -37,7 +37,7 @@ class _EditContentScreenState extends State<EditContentScreen> {
       categoryId = routeArgs['categoryId'];
       if (contentId != null && contentId != '') {
         _editedContent = Provider.of<ContentProviders>(context, listen: false)
-            .getContent(categoryId, contentId);
+            .getContentByContentIdAndCategoryId(contentId,categoryId);
       } else {}
     }
     _isInit = false;

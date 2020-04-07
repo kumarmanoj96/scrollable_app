@@ -67,15 +67,12 @@ class _ScrollerScreenState extends State<ScrollerScreen> {
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
     String currentLevelId = routeArgs['levelId'];
     String contentData = routeArgs['contentData'];
-    String val =
-        'manoj kumar manoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumarmanoj kumar';
-
     final levelData = Provider.of<LevelProviders>(context);
     final currentLevel = levelData.getLevel(currentLevelId);
     int speedFactor = currentLevel.speedFactor;
     return Scaffold(
       appBar: AppBar(
-        title: Text('level 1'),
+        title: Text(currentLevel.levelName),
       ),
       body: SafeArea(
         child: NotificationListener(
@@ -97,10 +94,10 @@ class _ScrollerScreenState extends State<ScrollerScreen> {
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _scrollController,
-                itemCount: 10,
+                itemCount: 2,
                 itemExtent: 100.0,
                 itemBuilder: (context, index) {
-                  return   Text(index<=10? "Index : $index":"");
+                  return   Text(index<=0? contentData:"");
                 },
               ),
             )

@@ -11,15 +11,18 @@ class ContentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final contentProvidersData = Provider.of<ContentProviders>(context);
-    final content = contentProvidersData.getContent(contentId, categoryId);
+    final content = contentProvidersData.getContentByContentIdAndCategoryId(
+        contentId, categoryId);
 
     return content == null
         ? Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.red,
+            ),
             alignment: Alignment.center,
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
-            color: Colors.red,
             child: ListTile(
               leading: Icon(Icons.note),
               title: Text('Unable to load'),
@@ -53,15 +56,16 @@ class ContentScreen extends StatelessWidget {
                         child: Container(
                           height: 300,
                           width: double.infinity,
-                          child: content.imageURL != null
-                              ? Image.network(
-                                  (content.imageURL),
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  'assets/images/no_image_available.png',
-                                  fit: BoxFit.cover,
-                                ),
+                          child:
+                              content.imageURL != null && content.imageURL != ''
+                                  ? Image.network(
+                                      (content.imageURL),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      'assets/images/no_image_available.png',
+                                      fit: BoxFit.cover,
+                                    ),
                         ),
                       ),
                       // FittedBox(

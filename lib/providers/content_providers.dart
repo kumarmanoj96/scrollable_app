@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:scrollable_app/models/category.dart';
 import 'dart:convert';
-import 'package:html/parser.dart';
-import './categories_providers.dart';
-// import '../models/http_exception.dart';
 
+import '../models/http_exception.dart';
 import '../models/content.dart';
 
 class ContentProviders with ChangeNotifier {
@@ -32,79 +29,11 @@ class ContentProviders with ChangeNotifier {
     return [];
   }
 
-  Future<void> fetchAndSetContents() async {
-    print("inside fetchAndSetContents\n\n");
-    CategoriesProviders c = new CategoriesProviders();
-    for (Category category in c.categories) {
-      var url =
-          'https://scrollable-app.firebaseio.com/${category.id}/contents.json';
-      try {
-        final response = await http.get(url);
-        print("response:");
-        print(response);
-        final extractedData =
-            json.decode(response.body) as Map<String, dynamic>;
-        print(extractedData);
-        if (extractedData == null) {
-          return;
-        }
-        final List<Content> loadedContents = [];
-
-        extractedData.forEach((key, value) {
-          loadedContents.add(Content(
-            contentId: key,
-            categoryId: value["categoryId"],
-            contentData: value["contentData"],
-            contentTitle: value["contentTitle"],
-            imageURL: value['imageURL'],
-          ));
-          _contents[category.id] = loadedContents;
-        });
-        notifyListeners();
-      } catch (error) {
-        print('error occured\n');
-        print(error);
-        throw (error);
-      }
-    }
-    print('Done');
-  }
-
-  Content getContent(String contentId, String categoryId) {
+  Content getContentByContentIdAndCategoryId(
+      String contentId, String categoryId) {
     if (_contents.containsKey(categoryId)) {
       return _contents[categoryId]
           .firstWhere((content) => content.contentId == contentId);
-    }
-    return null;
-  }
-
-  Future<Content> getWholeContent(String contentId, String categoryId) async {
-    print('inside getWholeContent');
-    if (_contents.containsKey(categoryId)) {
-      Content c = _contents[categoryId]
-          .firstWhere((content) => content.contentId == contentId);
-      final fullResponse = await http.get(c.fullContentURL);
-      // Use html parser
-      var document = parse(fullResponse.body);
-      var paragraphs = document.body.querySelectorAll("p");
-      var wholeContent = "";
-      for (var paragraph in paragraphs) {
-        if (paragraph.text != null &&
-            paragraph.text.length >= 25 &&
-            paragraph.text[paragraph.text.length - 1] == '.') {
-          wholeContent += paragraph.text;
-        }
-      }
-      print('the whole content is:$wholeContent');
-      return new Content(
-        contentId: c.contentId,
-        categoryId: c.categoryId,
-        contentData: wholeContent,
-        contentTitle: c.contentTitle,
-        fullContentURL: c.fullContentURL,
-        imageURL: c.imageURL,
-        description: c.description,
-      );
     }
     return null;
   }
@@ -155,16 +84,16 @@ class ContentProviders with ChangeNotifier {
       }
       print(extractedData);
       final List<Content> loadedContents = [];
-        extractedData.forEach((key, value) {
-          loadedContents.add(Content(
-            contentId: key,
-            categoryId: value["categoryId"],
-            contentData: value["contentData"],
-            contentTitle: value["contentTitle"],
-            imageURL: value['imageURL'],
-          ));
-          _contents[categoryId] = loadedContents;
-        });
+      extractedData.forEach((key, value) {
+        loadedContents.add(Content(
+          contentId: key,
+          categoryId: value["categoryId"],
+          contentData: value["contentData"],
+          contentTitle: value["contentTitle"],
+          imageURL: value['imageURL'],
+        ));
+        _contents[categoryId] = loadedContents;
+      });
       notifyListeners();
     } catch (error) {
       print('error occured:');
@@ -173,4 +102,45 @@ class ContentProviders with ChangeNotifier {
     }
     print('Done');
   }
+
+  Future<void> deleteContent(String contentId, String categoryId) async {
+    print("inside delete content=====");
+    print("contentId:");print(contentId);
+    print("categoryId");print(categoryId);
+    final url =
+        'https://scrollable-app.firebaseio.com/${categoryId}/contents/$contentId.json';
+    Content existingContent =
+        getContentByContentIdAndCategoryId(contentId, categoryId);
+print("existingContent:");print(existingContent);
+    _contents[categoryId]
+        .removeWhere((content) => content.contentId == contentId);
+    notifyListeners();
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      _contents[categoryId].add(existingContent);
+      notifyListeners();
+      throw HttpException('Could not delete product.');
+    }
+    existingContent = null;
+  }
+
+  // @todo
+  // Future<void> updateContent(String id, Content updatedContent) async {
+  //   final prodIndex = _items.indexWhere((prod) => prod.id == id);
+  //   if (prodIndex >= 0) {
+  //     final url =
+  //         'https://scrollable-app.firebaseio.com/${categoryId}/contents/$contentId.json';
+  //     await http.patch(url,
+  //         body: json.encode({
+  //           'title': newProduct.title,
+  //           'imageUrl': newProduct.imageUrl,
+  //           'description': newProduct.description,
+  //           'price': newProduct.price,
+  //         }));
+  //     _items[prodIndex] = newProduct;
+  //     notifyListeners();
+  //   } else {
+  //     print('...');
+  //   }
+  // }
 }
