@@ -47,8 +47,4 @@ class CategoriesProviders with ChangeNotifier{
   List<Category> get categories {
     return _categories;
   }
-
-  // Category getCategory(String categoryId){
-    
-  // }
 }

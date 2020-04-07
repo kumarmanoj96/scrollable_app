@@ -52,6 +52,7 @@ flutter:
    - assets/images/health_news.png
    - assets/images/science_news.png
    - assets/images/sports_news.png
+   - assets/images/technology_news.png
    - assets/images/level1.png
    - assets/images/level2.png
    - assets/images/level3.png

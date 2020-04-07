@@ -23,11 +23,6 @@ class _EditContentScreenState extends State<EditContentScreen> {
   );
   var _isInit = true;
   var _isLoading = false;
-  var initValue = {
-    'contentTitle': '',
-    'contentData': '',
-    'imageURL': '',
-  };
   @override
   void initState() {
     super.initState();
@@ -40,17 +35,9 @@ class _EditContentScreenState extends State<EditContentScreen> {
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       contentId = routeArgs['contentId'];
       categoryId = routeArgs['categoryId'];
-      print("categoryId:==$categoryId");
-      print("contentId:==$contentId");
       if (contentId != null && contentId != '') {
         _editedContent = Provider.of<ContentProviders>(context, listen: false)
             .getContent(categoryId, contentId);
-        initValue = {
-          'contentTitle': _editedContent.contentTitle,
-          'contentData': _editedContent.contentData,
-          'description': _editedContent.description,
-          'imageURL': '',
-        };
       } else {}
     }
     _isInit = false;
@@ -131,7 +118,6 @@ class _EditContentScreenState extends State<EditContentScreen> {
                         decoration: InputDecoration(
                           labelText: 'Title',
                         ),
-                        initialValue: initValue['title'],
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
                           FocusScope.of(context)
@@ -158,14 +144,13 @@ class _EditContentScreenState extends State<EditContentScreen> {
                         decoration: InputDecoration(
                           labelText: 'contentData',
                         ),
-                        initialValue: initValue['contentData'],
                         maxLines: 3,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter a contentData';
                           }
-                          if (value.length < 10) {
-                            return 'Should be at least 10 charactors long.';
+                          if (value.length < 5) {
+                            return 'Should be at least 5 charactors long.';
                           }
                           return null;
                         },
