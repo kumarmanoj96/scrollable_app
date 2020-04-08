@@ -64,7 +64,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
         ModalRoute.of(context).settings.arguments as Map<String, String>;
     final categoryId = routeArgs['categoryId'];
     final contentId = routeArgs['contentId'];
-    final content = Provider.of<ContentProviders>(context)
+    final content = Provider.of<ContentProviders>(context,listen: false)
         .getContentByContentIdAndCategoryId(
       contentId,
       categoryId,

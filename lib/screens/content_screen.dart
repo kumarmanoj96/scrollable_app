@@ -10,7 +10,7 @@ class ContentScreen extends StatelessWidget {
   ContentScreen({this.categoryId, this.contentId});
   @override
   Widget build(BuildContext context) {
-    final contentProvidersData = Provider.of<ContentProviders>(context);
+    final contentProvidersData = Provider.of<ContentProviders>(context,listen: false);
     final content = contentProvidersData.getContentByContentIdAndCategoryId(
         contentId, categoryId);
 
