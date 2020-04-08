@@ -73,6 +73,7 @@ class ContentProviders with ChangeNotifier {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
+        _contents[categoryId] = <Content>[];
         return;
       }
       print(extractedData);
@@ -139,24 +140,4 @@ class ContentProviders with ChangeNotifier {
       throw HttpException('Could not Update Content.');
     }
   }
-
-  // @todo
-  // Future<void> updateContent(String id, Content updatedContent) async {
-  //   final prodIndex = _items.indexWhere((prod) => prod.id == id);
-  //   if (prodIndex >= 0) {
-  //     final url =
-  //         'https://scrollable-app.firebaseio.com/${categoryId}/contents/$contentId.json';
-  //     await http.patch(url,
-  //         body: json.encode({
-  //           'title': newProduct.title,
-  //           'imageUrl': newProduct.imageUrl,
-  //           'description': newProduct.description,
-  //           'price': newProduct.price,
-  //         }));
-  //     _items[prodIndex] = newProduct;
-  //     notifyListeners();
-  //   } else {
-  //     print('...');
-  //   }
-  // }
 }

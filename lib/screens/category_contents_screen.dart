@@ -17,7 +17,6 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
   String categoryTitle;
   String categoryId;
   bool _isInit = true;
-  bool _isLoading = false;
 
   Future<void> _refreshProducts(BuildContext context, String categoryId) async {
     await Provider.of<ContentProviders>(context, listen: false)
@@ -27,27 +26,10 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
       final routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, String>;
       categoryTitle = routeArgs['title'];
       categoryId = routeArgs['id'];
-
-      Provider.of<ContentProviders>(context,listen: false)
-          .fetchAndSetContentsByCategoryId(categoryId)
-          .then((_) {
-        print('fetching done');
-        setState(() {
-          _isLoading = false;
-        });
-      }).catchError((error) {
-        print('error==:$error');
-        setState(() {
-          _isLoading = false;
-        });
-      });
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -55,11 +37,6 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final contentProvidersData = Provider.of<ContentProviders>(context);
-    final contents =
-        contentProvidersData.getContentOnBasisOfCategory(categoryId);
-
-    print("getContentOnBasisOfCategory was called");
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
@@ -72,27 +49,50 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
               }),
         ],
       ),
-      body: _isLoading == true
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : RefreshIndicator(
-              onRefresh: () => _refreshProducts(context, categoryId),
-              child: contents.length == 0
-                  ? Center(
-                      child: Text('oops no content is availabe'),
-                    )
-                  : ListView.builder(
-                      itemBuilder: (ctx, index) {
-                        print(contents[index].contentId);
-                        return ContentScreen(
-                          categoryId: categoryId,
-                          contentId: contents[index].contentId,
-                        );
-                      },
-                      itemCount: contents.length,
-                    ),
-            ),
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context, categoryId),
+        child: FutureBuilder(
+          future: Provider.of<ContentProviders>(context, listen: false)
+              .fetchAndSetContentsByCategoryId(categoryId),
+          builder: (ctx, dataSnapshot) {
+            if (dataSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              if (dataSnapshot.error != null) {
+                return Center(
+                  child: Text('An error occured'),
+                );
+              } else {
+                return Consumer<ContentProviders>(
+                  builder: (ctx, contentData, child) => contentData
+                              .getContentOnBasisOfCategory(categoryId)
+                              .length ==
+                          0
+                      ? Center(
+                          child: Text('oops no content is availabe'),
+                        )
+                      : ListView.builder(
+                          itemBuilder: (ctx, index) {
+                            return ContentScreen(
+                              categoryId: categoryId,
+                              contentId: contentData
+                                  .getContentOnBasisOfCategory(
+                                      categoryId)[index]
+                                  .contentId,
+                            );
+                          },
+                          itemCount: contentData
+                              .getContentOnBasisOfCategory(categoryId)
+                              .length,
+                        ),
+                );
+              }
+            }
+          },
+        ),
+      ),
     );
   }
 }
