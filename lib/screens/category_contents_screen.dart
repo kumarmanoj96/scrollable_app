@@ -53,6 +53,8 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
     final contentProvidersData = Provider.of<ContentProviders>(context);
     final contents =
         contentProvidersData.getContentOnBasisOfCategory(categoryId);
+
+        print("getContentOnBasisOfCategory was called");
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
@@ -69,24 +71,20 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : _isLoading == true
+          : contents.length == 0
               ? Center(
-                  child: CircularProgressIndicator(),
+                  child: Text('oops no content is availabe'),
                 )
-              : contents.length == 0
-                  ? Center(
-                      child: Text('oops no content is availabe'),
-                    )
-                  : ListView.builder(
-                      itemBuilder: (ctx, index) {
-                        print(contents[index].contentId);
-                        return ContentScreen(
-                          categoryId: categoryId,
-                          contentId: contents[index].contentId,
-                        );
-                      },
-                      itemCount: contents.length,
-                    ),
+              : ListView.builder(
+                  itemBuilder: (ctx, index) {
+                    print(contents[index].contentId);
+                    return ContentScreen(
+                      categoryId: categoryId,
+                      contentId: contents[index].contentId,
+                    );
+                  },
+                  itemCount: contents.length,
+                ),
     );
   }
 }

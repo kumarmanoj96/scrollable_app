@@ -9,8 +9,6 @@ import '../models/content.dart';
 class ContentProviders with ChangeNotifier {
   final Map<String, List<Content>> _contents = {};
 
-// List<Content> _contents;
-
   List<Content> get getAllTypeOfContent {
     List<Content> contents = [];
     _contents.forEach((categoryId, contentList) {
@@ -24,14 +22,16 @@ class ContentProviders with ChangeNotifier {
   List<Content> getContentOnBasisOfCategory(String categoryId) {
     print('inside getContentOnBasisOfCategory');
     if (_contents.containsKey(categoryId)) {
+      print("yes");
       return _contents[categoryId];
     }
-    return [];
+    return <Content>[];
   }
 
   Content getContentByContentIdAndCategoryId(
       String contentId, String categoryId) {
     if (_contents.containsKey(categoryId)) {
+      if (_contents[categoryId].length == 0) return null;
       return _contents[categoryId]
           .firstWhere((content) => content.contentId == contentId);
     }
@@ -66,14 +66,11 @@ class ContentProviders with ChangeNotifier {
       _contents[content.categoryId].add(newContent);
       notifyListeners();
     } catch (error) {
-      print("the error is:");
-      print(error);
-      throw (error);
+      throw HttpException('Could not Add Content.');
     }
   }
 
   Future<void> fetchAndSetContentsByCategoryId(String categoryId) async {
-    print('inside fetchAndSetContentsByCategoryId:\n');
     var url =
         'https://scrollable-app.firebaseio.com/${categoryId}/contents.json';
     try {
@@ -96,22 +93,16 @@ class ContentProviders with ChangeNotifier {
       });
       notifyListeners();
     } catch (error) {
-      print('error occured:');
-      print(error);
-      throw (error);
+      throw HttpException('Could not load contents.');
     }
     print('Done');
   }
 
   Future<void> deleteContent(String contentId, String categoryId) async {
-    print("inside delete content=====");
-    print("contentId:");print(contentId);
-    print("categoryId");print(categoryId);
     final url =
         'https://scrollable-app.firebaseio.com/${categoryId}/contents/$contentId.json';
     Content existingContent =
         getContentByContentIdAndCategoryId(contentId, categoryId);
-print("existingContent:");print(existingContent);
     _contents[categoryId]
         .removeWhere((content) => content.contentId == contentId);
     notifyListeners();
@@ -119,7 +110,7 @@ print("existingContent:");print(existingContent);
     if (response.statusCode >= 400) {
       _contents[categoryId].add(existingContent);
       notifyListeners();
-      throw HttpException('Could not delete product.');
+      throw HttpException('Could not delete Content.');
     }
     existingContent = null;
   }

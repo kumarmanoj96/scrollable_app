@@ -37,7 +37,7 @@ class _EditContentScreenState extends State<EditContentScreen> {
       categoryId = routeArgs['categoryId'];
       if (contentId != null && contentId != '') {
         _editedContent = Provider.of<ContentProviders>(context, listen: false)
-            .getContentByContentIdAndCategoryId(contentId,categoryId);
+            .getContentByContentIdAndCategoryId(contentId, categoryId);
       } else {}
     }
     _isInit = false;
@@ -65,13 +65,13 @@ class _EditContentScreenState extends State<EditContentScreen> {
     } else {
       try {
         await Provider.of<ContentProviders>(context, listen: false)
-            .addContent(_editedContent,categoryId);
+            .addContent(_editedContent, categoryId);
       } catch (error) {
         await showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-                  title: Text('An error occured!'),
-                  content: Text('Something went wrong!'),
+                  title: Text('Something went wrong!'),
+                  content: Text(error.toString()),
                   actions: <Widget>[
                     FlatButton(
                         child: Text('Okay'),

@@ -62,8 +62,8 @@ class _LevelsScreenState extends State<LevelsScreen> {
     // final scaffold = Scaffold.of(context);
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
-        final categoryId = routeArgs['categoryId'];
-        final contentId =  routeArgs['contentId'];
+    final categoryId = routeArgs['categoryId'];
+    final contentId = routeArgs['contentId'];
     final content = Provider.of<ContentProviders>(context)
         .getContentByContentIdAndCategoryId(
       contentId,
@@ -73,37 +73,46 @@ class _LevelsScreenState extends State<LevelsScreen> {
     final levels = levelData.levels;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Improve reading skill'),
+        title: FittedBox(child: Text('Improve reading skill')),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                print('edit btn pressed:');
-                print(contentId);
-                 Navigator.of(context).pushNamed(EditContentScreen.routeName,
-                    arguments: {'contentId': contentId, 'categoryId': categoryId});
-              },
-              color: Theme.of(context).primaryColor,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () async {
-                try {
-                  print('delete btn pressed:');
-                  await Provider.of<ContentProviders>(context, listen: false)
-                      .deleteContent(contentId,categoryId);
-                      Navigator.of(context).pop();
-                } catch (error) {
-                  // scaffold.showSnackBar(
-                  //   SnackBar(
-                  //     content:
-                  //         Text('Deleting Failed!', textAlign: TextAlign.center),
-                  //   ),
-                  // );
-                }
-              },
-              color: Theme.of(context).errorColor,
-            )
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              print('edit btn pressed:');
+              print(contentId);
+              Navigator.of(context).pushNamed(EditContentScreen.routeName,
+                  arguments: {
+                    'contentId': contentId,
+                    'categoryId': categoryId
+                  });
+            },
+            color: Theme.of(context).primaryColor,
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () async {
+              try {
+                await Provider.of<ContentProviders>(context, listen: false)
+                    .deleteContent(contentId, categoryId);
+                Navigator.of(context).pop();
+              } catch (error) {
+                await showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                          title: Text('An error occured!'),
+                          content: Text(error.toString()),
+                          actions: <Widget>[
+                            FlatButton(
+                                child: Text('Okay'),
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                })
+                          ],
+                        ));
+              }
+            },
+            color: Theme.of(context).errorColor,
+          )
         ],
       ),
       body: content == null
