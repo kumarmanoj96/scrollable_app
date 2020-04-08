@@ -20,9 +20,7 @@ class ContentProviders with ChangeNotifier {
   }
 
   List<Content> getContentOnBasisOfCategory(String categoryId) {
-    print('inside getContentOnBasisOfCategory');
     if (_contents.containsKey(categoryId)) {
-      print("yes");
       return _contents[categoryId];
     }
     return <Content>[];
@@ -39,8 +37,6 @@ class ContentProviders with ChangeNotifier {
   }
 
   Future<void> addContent(Content content, String categoryId) async {
-    // CategoriesProviders c = new CategoriesProviders();
-    // List<Category> categories = c.categories;
     if (!_contents.containsKey(categoryId)) {
       _contents[categoryId] = [];
     }
@@ -113,6 +109,35 @@ class ContentProviders with ChangeNotifier {
       throw HttpException('Could not delete Content.');
     }
     existingContent = null;
+  }
+
+  Future<void> updateContent(Content content, String categoryId) async {
+    final url =
+        'https://scrollable-app.firebaseio.com/${categoryId}/contents/${content.contentId}.json';
+    try {
+      final response = await http.patch(url,
+          body: json.encode({
+            'contentTitle': content.contentTitle,
+            'categoryId': categoryId,
+            'imageURL': content.imageURL,
+            'contentData': content.contentData,
+            'description': content.description,
+          }));
+      final newContent = Content(
+        contentTitle: content.contentTitle,
+        categoryId: categoryId,
+        imageURL: content.imageURL,
+        contentData: content.contentData,
+        description: content.description,
+        contentId: json.decode(response.body)['name'],
+      );
+      _contents[categoryId]
+          .removeWhere((c) => c.contentId == content.contentId);
+      _contents[content.categoryId].add(newContent);
+      notifyListeners();
+    } catch (error) {
+      throw HttpException('Could not Update Content.');
+    }
   }
 
   // @todo

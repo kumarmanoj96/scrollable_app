@@ -19,6 +19,11 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
   bool _isInit = true;
   bool _isLoading = false;
 
+  Future<void> _refreshProducts(BuildContext context, String categoryId) async {
+    await Provider.of<ContentProviders>(context, listen: false)
+        .fetchAndSetContentsByCategoryId(categoryId);
+  }
+
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -30,7 +35,7 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
       categoryTitle = routeArgs['title'];
       categoryId = routeArgs['id'];
 
-      Provider.of<ContentProviders>(context)
+      Provider.of<ContentProviders>(context,listen: false)
           .fetchAndSetContentsByCategoryId(categoryId)
           .then((_) {
         print('fetching done');
@@ -54,7 +59,7 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
     final contents =
         contentProvidersData.getContentOnBasisOfCategory(categoryId);
 
-        print("getContentOnBasisOfCategory was called");
+    print("getContentOnBasisOfCategory was called");
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
@@ -71,20 +76,23 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : contents.length == 0
-              ? Center(
-                  child: Text('oops no content is availabe'),
-                )
-              : ListView.builder(
-                  itemBuilder: (ctx, index) {
-                    print(contents[index].contentId);
-                    return ContentScreen(
-                      categoryId: categoryId,
-                      contentId: contents[index].contentId,
-                    );
-                  },
-                  itemCount: contents.length,
-                ),
+          : RefreshIndicator(
+              onRefresh: () => _refreshProducts(context, categoryId),
+              child: contents.length == 0
+                  ? Center(
+                      child: Text('oops no content is availabe'),
+                    )
+                  : ListView.builder(
+                      itemBuilder: (ctx, index) {
+                        print(contents[index].contentId);
+                        return ContentScreen(
+                          categoryId: categoryId,
+                          contentId: contents[index].contentId,
+                        );
+                      },
+                      itemCount: contents.length,
+                    ),
+            ),
     );
   }
 }

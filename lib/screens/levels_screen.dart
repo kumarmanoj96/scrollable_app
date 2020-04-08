@@ -80,13 +80,14 @@ class _LevelsScreenState extends State<LevelsScreen> {
             onPressed: () {
               print('edit btn pressed:');
               print(contentId);
-              Navigator.of(context).pushNamed(EditContentScreen.routeName,
+              Navigator.of(context).pushReplacementNamed(EditContentScreen.routeName,
                   arguments: {
                     'contentId': contentId,
                     'categoryId': categoryId
                   });
+                  // Navigator.of(context).pop();
             },
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).errorColor,
           ),
           IconButton(
             icon: Icon(Icons.delete),

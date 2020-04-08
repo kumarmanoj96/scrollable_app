@@ -60,8 +60,24 @@ class _EditContentScreenState extends State<EditContentScreen> {
       _isLoading = true;
     });
     if (_editedContent.contentId != null && _editedContent.contentId != '') {
-      // await Provider.of<ContentProviders>(context, listen: false)
-      //     .updateContent(_editedContent.contentId, _editedContent);
+      try {
+        await Provider.of<ContentProviders>(context, listen: false)
+            .updateContent(_editedContent, categoryId);
+      } catch (error) {
+        await showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('Something went wrong!'),
+                  content: Text(error.toString()),
+                  actions: <Widget>[
+                    FlatButton(
+                        child: Text('Okay'),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        })
+                  ],
+                ));
+      }
     } else {
       try {
         await Provider.of<ContentProviders>(context, listen: false)
