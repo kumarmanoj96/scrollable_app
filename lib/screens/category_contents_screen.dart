@@ -19,6 +19,7 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
   bool _isInit = true;
 
   Future<void> _refreshProducts(BuildContext context, String categoryId) async {
+    print("inside _refreshProducts:$categoryId");
     await Provider.of<ContentProviders>(context, listen: false)
         .fetchAndSetContentsByCategoryId(categoryId);
   }
@@ -44,8 +45,14 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
           IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                Navigator.of(context).pushNamed(EditContentScreen.routeName,
-                    arguments: {'contentId': '', 'categoryId': categoryId});
+                print("inside onpressed:$categoryId");
+                Navigator.of(context).pushNamed(
+                  EditContentScreen.routeName,
+                  arguments: {
+                    'contentId': '',
+                    'categoryId': categoryId,
+                  },
+                );
               }),
         ],
       ),

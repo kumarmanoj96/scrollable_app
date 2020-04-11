@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../screens/category_contents_screen.dart';
 
-import '../providers/categories_providers.dart';
 
 class CategoryItem extends StatelessWidget {
   final String id;
@@ -19,7 +17,6 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoriesProvidersData = Provider.of<CategoriesProviders>(context);
     return Card(
       borderOnForeground: true,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -38,7 +35,7 @@ class CategoryItem extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.asset(
-                categoryImageLocation,
+                categoryImageLocation!=null&&categoryImageLocation!=''?categoryImageLocation:'assets/images/no_image_available.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -52,7 +49,7 @@ class CategoryItem extends StatelessWidget {
                 ),
                 color: Theme.of(context).accentColor,
                 onPressed: () {
-                  categoriesProvidersData.toggleFavouriteStatus(id);
+                  // categoriesProvidersData.toggleFavouriteStatus(id);
                 },
               ),
               backgroundColor: Colors.black87,

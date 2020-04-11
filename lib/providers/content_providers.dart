@@ -7,7 +7,15 @@ import '../models/http_exception.dart';
 import '../models/content.dart';
 
 class ContentProviders with ChangeNotifier {
-  final Map<String, List<Content>> _contents = {};
+  final Map<String, List<Content>> _contents;
+
+  final String authToken;
+  final String userId;
+  ContentProviders(this.authToken, this.userId, this._contents);
+
+  Map<String, List<Content>> get contents {
+    return {..._contents}; //returning a copy
+  }
 
   List<Content> get getAllTypeOfContent {
     List<Content> contents = [];
@@ -41,7 +49,7 @@ class ContentProviders with ChangeNotifier {
       _contents[categoryId] = [];
     }
     final url =
-        'https://scrollable-app.firebaseio.com/${categoryId}/contents.json';
+        'https://scrollable-app-582c6.firebaseio.com/${categoryId}/contents.json?auth=$authToken';
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -68,7 +76,7 @@ class ContentProviders with ChangeNotifier {
 
   Future<void> fetchAndSetContentsByCategoryId(String categoryId) async {
     var url =
-        'https://scrollable-app.firebaseio.com/${categoryId}/contents.json';
+        'https://scrollable-app-582c6.firebaseio.com/${categoryId}/contents.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -97,7 +105,7 @@ class ContentProviders with ChangeNotifier {
 
   Future<void> deleteContent(String contentId, String categoryId) async {
     final url =
-        'https://scrollable-app.firebaseio.com/${categoryId}/contents/$contentId.json';
+        'https://scrollable-app-582c6.firebaseio.com/${categoryId}/contents/$contentId.json?auth=$authToken';
     Content existingContent =
         getContentByContentIdAndCategoryId(contentId, categoryId);
     _contents[categoryId]
@@ -114,7 +122,7 @@ class ContentProviders with ChangeNotifier {
 
   Future<void> updateContent(Content content, String categoryId) async {
     final url =
-        'https://scrollable-app.firebaseio.com/${categoryId}/contents/${content.contentId}.json';
+        'https://scrollable-app-582c6.firebaseio.com/${categoryId}/contents/${content.contentId}.json?auth=$authToken';
     try {
       final response = await http.patch(url,
           body: json.encode({

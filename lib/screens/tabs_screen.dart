@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../screens/categories_screen.dart';
-import '../screens/favouties_screen.dart';
-
-import '../providers/content_providers.dart';
+import '../screens/favorites_screen.dart';
+import '../screens/edit_category_screen.dart';
 
 class TabsScreen extends StatefulWidget {
+  static const routeName = '/tabs-screen';
+
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
@@ -28,16 +28,24 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'Categories',
       },
       {
-        'page': FavouritesScreen(),
+        'page': CategoriesScreen(),
         'title': 'Your favourites',
       }
     ];
-  } 
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(_pages[_selectedPage]['title']),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).pushNamed(EditCategoryScreen.routeName);
+              }),
+        ],
       ),
       // drawer: MainDrawer(),
       body: _pages[_selectedPage]['page'],
