@@ -9,14 +9,17 @@ class CategoriesProviders with ChangeNotifier {
   List<CategoryProviders> _categories = [];
 
   final String authToken;
-  CategoriesProviders(this.authToken, this._categories);
+  final String userId;
+  CategoriesProviders(this.authToken, this.userId, this._categories);
 
   List<CategoryProviders> get categories {
     return _categories;
   }
 
   List<CategoryProviders> get favoriteCategories {
-    return _categories.where((category) => category.isFavourite);
+    print("*********insidefavoriteCategories ");
+    print(_categories);
+    return _categories.where((category) => category.isFavorite).toList();
   }
 
   CategoryProviders getCategoryByCategoryId(String categoryId) {
@@ -25,7 +28,7 @@ class CategoriesProviders with ChangeNotifier {
 
   bool _isFavouriteCategory(String categoryId) {
     return _categories
-        .any((category) => category.id == categoryId && category.isFavourite);
+        .any((category) => category.id == categoryId && category.isFavorite);
   }
 
   Future<void> addCategory(CategoryProviders category) async {
@@ -35,15 +38,15 @@ class CategoriesProviders with ChangeNotifier {
       final response = await http.post(url,
           body: json.encode({
             'title': category.title,
-            'imageURL': category.categoryImageLocation,
-            'isFavourite': false,
+            'categoryImageLocation': category.categoryImageLocation,
           }));
       final newCategory = CategoryProviders(
         title: category.title,
         id: json.decode(response.body)['name'],
-        isFavourite: false,
+        isFavorite: false,
         categoryImageLocation: category.categoryImageLocation,
       );
+      print("new category added with id:${newCategory.id}");
       _categories.add(newCategory);
       notifyListeners();
     } catch (error) {
@@ -61,19 +64,27 @@ class CategoriesProviders with ChangeNotifier {
         _categories = [];
         return;
       }
-      print(extractedData);
+      url =
+          'https://scrollable-app-582c6.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
+      print("*******favoriteData:");
+      print(favoriteData);
       final List<CategoryProviders> loadedCategories = [];
-      extractedData.forEach((key, value) {
+      extractedData.forEach((categoryId, value) {
         loadedCategories.add(CategoryProviders(
-          id: key,
+          id: categoryId,
           title: value["title"],
           categoryImageLocation: value["categoryImageLocation"],
-          isFavourite: value["isFavourite"],
+          isFavorite: favoriteData == null || favoriteData[categoryId] ==null
+              ? false
+              : favoriteData[categoryId]['isFavorite'] ?? false,
         ));
         _categories = loadedCategories;
       });
       notifyListeners();
     } catch (error) {
+      print(error);
       throw HttpException('Could not load categories.');
     }
     print('Done');

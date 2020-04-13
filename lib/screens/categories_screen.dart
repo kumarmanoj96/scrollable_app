@@ -7,9 +7,6 @@ import '../providers/categories_providers.dart';
 class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final categoriesProvidersData = Provider.of<CategoriesProviders>(context);
-    // final categories = categoriesProvidersData.categories;
-
     return FutureBuilder(
       future: Provider.of<CategoriesProviders>(context, listen: false)
           .fetchAndSetCategories(),
@@ -38,14 +35,9 @@ class CategoriesScreen extends StatelessWidget {
                                   childAspectRatio: 3 / 2,
                                   crossAxisSpacing: 10,
                                   mainAxisSpacing: 10),
-                          itemBuilder: (ctx, index) => CategoryItem(
-                            title: categoryData.categories[index].title,
-                            color: categoryData.categories[index].color,
-                            id: categoryData.categories[index].id,
-                            isFavourite:
-                                categoryData.categories[index].isFavourite,
-                            categoryImageLocation: categoryData
-                                .categories[index].categoryImageLocation,
+                          itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                            value: categoryData.categories[i],
+                            child: CategoryItem(),
                           ),
                           itemCount: categoryData.categories.length,
                         ),

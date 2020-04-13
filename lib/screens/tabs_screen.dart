@@ -4,6 +4,7 @@ import '../screens/categories_screen.dart';
 import '../screens/favorites_screen.dart';
 import '../screens/edit_category_screen.dart';
 
+import '../widgets/app_drawer.dart';
 class TabsScreen extends StatefulWidget {
   static const routeName = '/tabs-screen';
 
@@ -28,7 +29,7 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'Categories',
       },
       {
-        'page': CategoriesScreen(),
+        'page': FavoritesScreen(),
         'title': 'Your favourites',
       }
     ];
@@ -49,6 +50,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       // drawer: MainDrawer(),
       body: _pages[_selectedPage]['page'],
+      drawer: AppDrawer(),
       bottomNavigationBar: BottomNavigationBar(
           onTap: _selectPage,
           backgroundColor: Colors.blue,

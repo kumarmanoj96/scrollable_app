@@ -9,29 +9,30 @@ class CategoryProviders with ChangeNotifier{
   final String title;
   final Color color;
   final String categoryImageLocation;
-  bool isFavourite;
+  bool isFavorite;
   CategoryProviders({
     @required this.id,
     @required this.title,
     this.color = Colors.orange,
-    this.isFavourite = false,
+    this.isFavorite = false,
     this.categoryImageLocation,
   });
 
   Future<void> toggleFavouritesStatus(String token,String userId) async {
     print('toggleFavouritesStatus called with userID:$userId');
-    var oldStatus = isFavourite;
-    final url = 'https://flutter-update-29928.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
-      isFavourite = !isFavourite;
+    print("and categoryId:$id");
+    var oldStatus = isFavorite;
+    final url = 'https://scrollable-app-582c6.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+      isFavorite = !isFavorite;
     notifyListeners();
     final response = await http.put(url,
         body: json.encode({
-          'isFavourite':isFavourite,
+          'isFavorite':isFavorite,
         }));
         var r = json.decode(response.body);
         print("\nresponse:$r");
     if (response.statusCode >= 400) {
-      isFavourite = oldStatus;
+      isFavorite = oldStatus;
       notifyListeners();
       throw HttpException('Could not toggle Favourites Status.');
     }

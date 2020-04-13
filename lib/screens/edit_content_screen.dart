@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../models/content.dart';
 import '../providers/content_providers.dart';
 
+import '../widgets/app_drawer.dart';
+
 class EditContentScreen extends StatefulWidget {
   static const routeName = 'edit-content';
   @override
@@ -120,6 +122,7 @@ class _EditContentScreenState extends State<EditContentScreen> {
           ),
         ],
       ),
+      drawer: AppDrawer(),
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),

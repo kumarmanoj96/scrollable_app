@@ -9,6 +9,8 @@ import '../models/content.dart';
 import '../models/level.dart';
 import '../models/http_exception.dart';
 
+import '../widgets/app_drawer.dart';
+
 class LevelsScreen extends StatefulWidget {
   static const routeName = '/levels';
 
@@ -116,6 +118,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
           )
         ],
       ),
+      drawer: AppDrawer(),
       body: content == null
           ? Center(child: Text('Unable to show the news'))
           : Card(

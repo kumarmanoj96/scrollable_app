@@ -10,6 +10,7 @@ class AuthProviders with ChangeNotifier {
   String _token;
   DateTime _expiryDate;
   String _userId;
+  String _email;
   Timer _authTimer;
 
   bool get isAuth {
@@ -18,6 +19,10 @@ class AuthProviders with ChangeNotifier {
 
   String get userId {
     return _userId;
+  }
+  
+  String get email {
+    return _email;
   }
 
   String get token {
@@ -47,6 +52,7 @@ class AuthProviders with ChangeNotifier {
       }
       _token = responseData['idToken'];
       _userId = responseData['localId'];
+      _email = responseData['email'];
       _expiryDate = DateTime.now().add(
         Duration(
           seconds: int.parse(

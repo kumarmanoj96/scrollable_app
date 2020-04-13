@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 import '../providers/level_providers.dart';
 
+import '../widgets/app_drawer.dart';
 class ScrollerScreen extends StatefulWidget {
   static const routeName = '/scroller-screen';
 
@@ -74,6 +75,7 @@ class _ScrollerScreenState extends State<ScrollerScreen> {
       appBar: AppBar(
         title: Text(currentLevel.levelName),
       ),
+      drawer: AppDrawer(),
       body: SafeArea(
         child: NotificationListener(
             onNotification: (notif) {

@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProviders, CategoriesProviders>(
           builder: (ctx, auth, previousCategories) => CategoriesProviders(
               auth.token,
+              auth.userId,
               previousCategories == null ? [] : previousCategories.categories),
         )
       ],

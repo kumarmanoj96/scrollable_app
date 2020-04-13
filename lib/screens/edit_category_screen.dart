@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/category_providers.dart';
 import '../providers/categories_providers.dart';
 
+import '../widgets/app_drawer.dart';
 class EditCategoryScreen extends StatefulWidget {
   static const routeName = 'edit-category';
   @override
@@ -17,7 +18,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     id: null,
     title: '',
     categoryImageLocation: '',
-    isFavourite: false,
+    isFavorite: false,
   );
   var _isInit = true;
   var _isLoading = false;
@@ -110,6 +111,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
           ),
         ],
       ),
+      drawer: AppDrawer(),
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
@@ -140,7 +142,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                             id: _editedCategory.id,
                             categoryImageLocation:
                                 _editedCategory.categoryImageLocation,
-                            isFavourite: _editedCategory.isFavourite,
+                            isFavorite: _editedCategory.isFavorite,
                           );
                         },
                       ),

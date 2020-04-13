@@ -6,6 +6,8 @@ import '../providers/content_providers.dart';
 import '../screens/content_screen.dart';
 import '../screens/edit_content_screen.dart';
 
+import '../widgets/app_drawer.dart';
+
 class CategoryContentsScreen extends StatefulWidget {
   static const routeName = '/category-contents';
 
@@ -56,6 +58,7 @@ class _CategoryContentsScreenState extends State<CategoryContentsScreen> {
               }),
         ],
       ),
+      drawer: AppDrawer(),
       body: RefreshIndicator(
         onRefresh: () => _refreshProducts(context, categoryId),
         child: FutureBuilder(
