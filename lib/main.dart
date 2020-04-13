@@ -8,12 +8,14 @@ import './screens/category_contents_screen.dart';
 import './screens/edit_content_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/edit_category_screen.dart';
+import './screens/splash_screen.dart';
 
 import './providers/level_providers.dart';
 import './providers/content_providers.dart';
 import './providers/categories_providers.dart';
 import './providers/auth_providers.dart';
 import './providers/category_providers.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -51,7 +53,14 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: authData.isAuth ? TabsScreen() : AuthScreen(),
+          home: authData.isAuth ? TabsScreen() : FutureBuilder(
+                  future: authData.tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+                ),
           routes: {
             TabsScreen.routeName: (ctx) => TabsScreen(),
             LevelsScreen.routeName: (ctx) => LevelsScreen(),
